@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS notes;
+
 CREATE TABLE IF NOT EXISTS notes (
 id serial PRIMARY KEY,
 title VARCHAR (255),
