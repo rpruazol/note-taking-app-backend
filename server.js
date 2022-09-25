@@ -17,6 +17,11 @@ app.get('/', (req, res) => {
   res.send(data);
 })
 
+app.post('/newnote', (req, res) => {
+  console.log(req.body)
+  res.send(req.body);
+})
+
 app.listen(PORT,() => {
   console.log('now listening on port ', PORT) 
 })
