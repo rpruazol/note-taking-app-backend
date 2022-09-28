@@ -10,10 +10,14 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 const client = new pg.Client(process.env.POSTGRES);
 
-
-client.connect(() => {
-  console.log('connected to db!')
+client.connect(err => {
+  if (err) {
+    console.error('connection error', err.stack)
+  } else {
+    console.log('connected to database!')
+  }
 })
+
 
 app.use(express.json())
 app.use(cors())
