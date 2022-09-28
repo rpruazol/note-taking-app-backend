@@ -41,6 +41,20 @@ app.delete('/note', (req, res) => {
   res.send(req.body);
 })
 
+app.post('/board', (req, res) => {
+  console.log(req.body)
+  const SQL = 'INSERT INTO boards (name, created_at) VALUES ($1, NOW()) RETURNING *'
+  const values = [req.body.title]
+  client.query(SQL, values, (err, res) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      console.log(res.rows[0]);
+    }
+  })
+  res.send(req.body);
+})
+
 app.post('/note', (req, res) => {
   console.log(req.body)
   const SQL = 'INSERT INTO notes (title, description, created_at) VALUES ($1, $2, NOW()) RETURNING *'
