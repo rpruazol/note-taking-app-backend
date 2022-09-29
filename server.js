@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   const SQL = `select * from boards;`
   client.query(SQL)
     .then(response => {
-      res.send(response.rows);
+      res.status(200).send(response.rows);
     })
 })
 
@@ -35,7 +35,7 @@ app.get('/notes', (req, res) => {
   const SQL = `select * from notes where board_id='${req.query.id}';`
   client.query(SQL)
     .then(response => {
-      res.send(response.rows);
+      res.status(200).send(response.rows);
     })
 })
 
@@ -51,7 +51,7 @@ app.delete('/note', (req, res) => {
       console.log(res.rows[0]);
     }
   })
-  res.send(req.body);
+  res.status(200).send(req.body);
 })
 
 app.post('/board', (req, res) => {
@@ -65,7 +65,32 @@ app.post('/board', (req, res) => {
       console.log(res.rows[0]);
     }
   })
-  res.send(req.body);
+  res.status(200).send(req.body);
+})
+
+app.delete('/board', (req, res) => {
+  console.log('delete info: ', req.body.board);
+  // delete the board and all the notes associated with it
+  const SQL = `DELETE from boards where id=$1;`;
+  const values = [req.body.board.id];
+  console.log('values: ', values)
+  client.query(SQL, values, (err, res) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      const SQL = `DELETE from notes where board_id=$1`
+      const values = [req.body.board.id]
+      client.query(SQL, values, (er, res) => {
+        if (err) {
+          console.log(err.stack)
+        } else {
+          console.log('deleted board and notes');
+        }
+      })
+    }
+  })
+  console.log('res.body', res.body);
+  res.status(200).send(req.body)
 })
 
 app.post('/note', (req, res) => {
@@ -79,7 +104,7 @@ app.post('/note', (req, res) => {
       console.log(res.rows[0]);
     }
   })
-  res.send(req.body);
+  res.status(200).send(req.body);
 
 })
 
