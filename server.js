@@ -74,23 +74,23 @@ app.delete('/board', (req, res) => {
   const SQL = `DELETE from boards where id=$1;`;
   const values = [req.body.board.id];
   console.log('values: ', values)
-  client.query(SQL, values, (err, res) => {
+  client.query(SQL, values, (err, result) => {
     if (err) {
       console.log(err.stack)
     } else {
       const SQL = `DELETE from notes where board_id=$1`
       const values = [req.body.board.id]
-      client.query(SQL, values, (er, res) => {
+      client.query(SQL, values, (err, result) => {
         if (err) {
           console.log(err.stack)
         } else {
           console.log('deleted board and notes');
+          console.log('res.body', res.body);
+          res.status(200).send(result.body)
         }
       })
     }
   })
-  console.log('res.body', res.body);
-  res.status(200).send(req.body)
 })
 
 app.post('/note', (req, res) => {

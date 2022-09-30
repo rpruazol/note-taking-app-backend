@@ -19,6 +19,35 @@ created_at TIMESTAMP
 );
 
 
+INSERT INTO boards (
+  name,
+  created_at
+)
+VALUES (
+  'To Do',
+  NOW()
+)
+RETURNING *;
+
+INSERT INTO boards (
+  name,
+  created_at
+)
+VALUES (
+  'Other',
+  NOW()
+)
+RETURNING *;
+
+INSERT INTO boards (
+  name,
+  created_at
+)
+VALUES (
+  'One more',
+  NOW()
+)
+RETURNING *;
 
 
 INSERT INTO notes (
@@ -51,23 +80,63 @@ VALUES (
   NOW()
 );
 
-
-INSERT INTO boards (
-  name,
+INSERT INTO notes (
+  title,
+  description,
+  board,
+  board_id,
   created_at
 )
 VALUES (
-  'To Do',
-  NOW()
-)
-RETURNING *;
-
-INSERT INTO boards (
-  name,
-  created_at
-)
-VALUES (
+  'other note',
+  'this is a note that should go in the "Other" board',
   'Other',
+  2,
   NOW()
+);
+
+INSERT INTO notes (
+  title,
+  description,
+  board,
+  board_id,
+  created_at
 )
-RETURNING *;
+VALUES (
+  'other note',
+  'lorum ipsum lorum ipsum lorum ipsum lorum ipsum',
+  'One more',
+  3,
+  NOW()
+);
+
+INSERT INTO notes (
+  title,
+  description,
+  board,
+  board_id,
+  created_at
+)
+VALUES (
+  'other note',
+  'lorum ipsum lorum ipsum lorum ipsum lorum ipsum',
+  'One more',
+  3,
+  NOW()
+);
+
+INSERT INTO notes (
+  title,
+  description,
+  board,
+  board_id,
+  created_at
+)
+VALUES (
+  'other note',
+  'lorum ipsum lorum ipsum lorum ipsum lorum ipsum',
+  'One more',
+  3,
+  NOW()
+);
+
