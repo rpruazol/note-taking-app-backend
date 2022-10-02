@@ -5,6 +5,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const pg = require('pg');
+const format = require('pg-format');
 const app = express();
 
 const PORT = process.env.PORT || 3002;
@@ -69,28 +70,21 @@ app.post('/board', (req, res) => {
 })
 
 app.put('/board', (req, res) => {
-  const placeholders = req.body.new_order.map((obj, idx) => {
-    return [`$${idx + 1}`].join(',')
-  }).join(',')
+
   const values = req.body.new_order.map(obj => {
     return [`(${obj.id}, ${obj.board_order})`].join(',')
-  })
-  const hardcode = ['(3, 1)','(8, 2)', '(2, 3)', '(1, 4)']
-  console.log(placeholders)
-  console.log(values)
-  const SQL = `
-      UPDATE boards AS b set
-        board_order = c.board_order
-    FROM (values
-      $1, $2, $3, $4
-    ) as c(id, board_order)
-    where c.id = b.id;
-    `
-    console.log('SQL ', SQL)
-  client.query(SQL, hardcode)
-    .then(result => {
-      console.log(result.rows)
-    })
+  }).join(',')
+  const SQL = format('UPDATE boards AS b set board_order = c.board_order FROM (values %s) as c(id, board_order) where c.id = b.id;', values)
+  
+    try {
+      client.query(SQL)
+        .then(result => {
+          console.log(result.rowCount)
+        })
+    }
+    catch(e) {
+      console.log(e)
+    }
 })
 
 app.delete('/board', (req, res) => {

@@ -15,7 +15,7 @@ updated_at TIMESTAMP
 CREATE TABLE IF NOT EXISTS boards (
 id serial PRIMARY KEY,
 name VARCHAR (255),
-board_order int,
+board_order serial,
 created_at TIMESTAMP
 );
 
