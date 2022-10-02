@@ -15,36 +15,43 @@ updated_at TIMESTAMP
 CREATE TABLE IF NOT EXISTS boards (
 id serial PRIMARY KEY,
 name VARCHAR (255),
+board_order serial,
 created_at TIMESTAMP
 );
 
 
 INSERT INTO boards (
   name,
+  board_order,
   created_at
 )
 VALUES (
   'To Do',
+  1,
   NOW()
 )
 RETURNING *;
 
 INSERT INTO boards (
   name,
+  board_order,
   created_at
 )
 VALUES (
   'Other',
+  2,
   NOW()
 )
 RETURNING *;
 
 INSERT INTO boards (
   name,
+  board_order,
   created_at
 )
 VALUES (
   'One more',
+  3,
   NOW()
 )
 RETURNING *;

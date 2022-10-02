@@ -5,6 +5,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const pg = require('pg');
+const format = require('pg-format');
 const app = express();
 
 const PORT = process.env.PORT || 3002;
@@ -24,7 +25,7 @@ app.use(cors())
 
 
 app.get('/', (req, res) => {
-  const SQL = `select * from boards;`
+  const SQL = `select * from boards order by board_order;`
   client.query(SQL)
     .then(response => {
       res.status(200).send(response.rows);
@@ -55,9 +56,9 @@ app.delete('/note', (req, res) => {
 })
 
 app.post('/board', (req, res) => {
-  console.log(req.body)
-  const SQL = 'INSERT INTO boards (name, created_at) VALUES ($1, NOW()) RETURNING *'
-  const values = [req.body.title]
+  const SQL = 'INSERT INTO boards (name, board_order, created_at) VALUES ($1, $2, NOW()) RETURNING *'
+  const values = [req.body.title, (req.body.board_order)+1]
+  console.log(values)
   client.query(SQL, values, (err, res) => {
     if (err) {
       console.log(err.stack)
@@ -66,6 +67,24 @@ app.post('/board', (req, res) => {
     }
   })
   res.status(200).send(req.body);
+})
+
+app.put('/board', (req, res) => {
+
+  const values = req.body.new_order.map(obj => {
+    return [`(${obj.id}, ${obj.board_order})`].join(',')
+  }).join(',')
+  const SQL = format('UPDATE boards AS b set board_order = c.board_order FROM (values %s) as c(id, board_order) where c.id = b.id;', values)
+  
+    try {
+      client.query(SQL)
+        .then(result => {
+          console.log(result.rowCount)
+        })
+    }
+    catch(e) {
+      console.log(e)
+    }
 })
 
 app.delete('/board', (req, res) => {
@@ -96,7 +115,7 @@ app.delete('/board', (req, res) => {
 app.post('/note', (req, res) => {
   console.log(req.body)
   const SQL = 'INSERT INTO notes (title, description, board, board_id, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *'
-  const values = [req.body.title, req.body.description, req.body.board, req.body.board_id ];
+  const values = [req.body.title, req.body.description, req.body.board, req.body.board_id];
   client.query(SQL, values, (err, res) => {
     if (err) {
       console.log(err.stack)
