@@ -56,9 +56,9 @@ app.delete('/note', (req, res) => {
 })
 
 app.post('/board', (req, res) => {
-  console.log(req.body)
   const SQL = 'INSERT INTO boards (name, board_order, created_at) VALUES ($1, $2, NOW()) RETURNING *'
-  const values = [req.body.title, req.body.board_order]
+  const values = [req.body.title, (req.body.board_order)+1]
+  console.log(values)
   client.query(SQL, values, (err, res) => {
     if (err) {
       console.log(err.stack)
