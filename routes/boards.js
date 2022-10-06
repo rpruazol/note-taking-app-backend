@@ -20,12 +20,11 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const SQL = 'INSERT INTO boards (name, board_order, created_at) VALUES ($1, $2, NOW()) RETURNING *'
   const values = [req.body.title, (req.body.board_order)+1]
-  console.log(values)
   client.query(SQL, values, (err, res) => {
     if (err) {
       console.log(err.stack)
     } else {
-      console.log(res.rows[0]);
+      console.log('created board: ', res.rows[0]);
     }
   })
   res.status(200).send(req.body);
